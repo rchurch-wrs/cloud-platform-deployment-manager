@@ -82,7 +82,7 @@
       become: yes
 
     - name: Install Deployment Manager
-      shell: KUBECONFIG=/etc/kubernetes/admin.conf /usr/sbin/helm upgrade --install deployment-manager {% if deployment_manager_overrides is defined %}--values {{ deployment_manager_overrides | basename }}{% endif %} {{ manager_chart | basename }}
+      shell: "[[ -e /etc/profile.d/helm.sh ]] && source /etc/profile.d/helm.sh; KUBECONFIG=/etc/kubernetes/admin.conf /usr/sbin/helm upgrade --install deployment-manager {% if deployment_manager_overrides is defined %}--values {{ deployment_manager_overrides | basename }}{% endif %} {{ manager_chart | basename }}"
 
     - name: Wait for Deployment Manager to be ready
       shell: KUBECONFIG=/etc/kubernetes/admin.conf /bin/kubectl wait --namespace=platform-deployment-manager --for=condition=Ready pods --selector control-plane=controller-manager --timeout=60s
